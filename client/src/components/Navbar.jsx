@@ -60,7 +60,7 @@ const Navbar = () => {
           ))}
         </div>
       )}
-      <div className="">
+      <div className="hidden md:block">
         <div className="hidden md:flex text-[13px] gap-4">
           <p>Help</p>
           <p>Orders & Returns</p>

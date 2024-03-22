@@ -1,14 +1,13 @@
-import Image from "next/image";
 import { Inter } from "next/font/google";
 import Otpform from "@/components/Otpform";
-import Navbar from "@/components/Navbar";
+import HomePage from "@/components/Home";
 
 const inter = Inter({ subsets: ["latin"] });
 
 export default function Home() {
   return (
     <main>
-    
+      <HomePage numberOfCategories={100} />
       <Otpform />
     </main>
   );

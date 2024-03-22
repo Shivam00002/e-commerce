@@ -1,6 +1,5 @@
 import React from "react";
 
-
 const Signup = () => {
   return (
     <div className="mt-16 bg-white border md:w-[400px] mx-auto border-gray-200 rounded-xl shadow-sm dark:bg-gray-800 dark:border-gray-700">
