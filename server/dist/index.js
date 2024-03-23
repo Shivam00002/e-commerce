@@ -46,6 +46,17 @@ function startServer() {
         app.get("/", (req, res) => {
             res.send({ _response: "Welcome to API" });
         });
+        // GET all users
+        app.get("/users", (req, res) => __awaiter(this, void 0, void 0, function* () {
+            try {
+                const users = yield user_1.default.find();
+                res.status(200).json(users);
+            }
+            catch (error) {
+                console.error("Error fetching users:", error);
+                res.status(500).json({ message: "Internal server error" });
+            }
+        }));
         app.post("/register", (req, res) => __awaiter(this, void 0, void 0, function* () {
             try {
                 const { username, email, password } = req.body;
