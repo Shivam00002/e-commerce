@@ -1,9 +1,19 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { IoSearchOutline } from "react-icons/io5";
 import { LuShoppingCart } from "react-icons/lu";
+import Cookies from "js-cookie";
 
 const Navbar = () => {
-  const Navlnks = [
+  const [username, setUsername] = useState("");
+
+  useEffect(() => {
+    const usernameFromCookie = Cookies.get("username");
+    if (usernameFromCookie) {
+      setUsername(usernameFromCookie);
+    }
+  }, []);
+
+  const NavLinks = [
     { name: "Categories", link: "/" },
     { name: "Sales", link: "/" },
     { name: "Clearance", link: "/" },
@@ -18,7 +28,7 @@ const Navbar = () => {
   };
 
   return (
-    <div className="fixed top-0 z-50  left-0 right-0 w-full flex items-center justify-between h-fit px-4 md:px-8 py-2  shadow-lg ">
+    <div className="fixed top-0 z-50 bg-white left-0 right-0 w-full flex items-center justify-between h-fit px-4 md:px-8 py-2 shadow-lg">
       <h1 className="font-bold md:text-[20px] ">ECOMMERCE</h1>
       <div className="md:hidden cursor-pointer" onClick={toggleMobileMenu}>
         <svg
@@ -36,10 +46,10 @@ const Navbar = () => {
           ></path>
         </svg>
       </div>
-      <div className="md:flex hidden    md:w-[550px] mx-auto items-center justify-around">
-        {Navlnks.map((el, index) => (
+      <div className="md:flex hidden md:w-[550px] mx-auto items-center justify-around">
+        {NavLinks.map((el, index) => (
           <a
-            className="font-semibold  md:text-[16px] cursor-pointer hover:text-green-800"
+            className="font-semibold md:text-[16px] cursor-pointer hover:text-green-800"
             key={index}
             href={el.link}
           >
@@ -49,9 +59,9 @@ const Navbar = () => {
       </div>
       {isMobileMenuOpen && (
         <div className="md:hidden absolute top-12 right-0 bg-[#edfbed] border shadow-md py-2 px-6">
-          {Navlnks.map((el, index) => (
+          {NavLinks.map((el, index) => (
             <a
-              className="font-semibold  md:text-[17px] cursor-pointer "
+              className="font-semibold md:text-[17px] cursor-pointer "
               key={index}
               href={el.link}
             >
@@ -64,10 +74,10 @@ const Navbar = () => {
         <div className="hidden md:flex text-[13px] gap-4">
           <p>Help</p>
           <p>Orders & Returns</p>
-          <p>Hi' John</p>
+          <p>Hi, {username}</p>
         </div>
 
-        <div className="hidden ml-36  md:flex items-center gap-4">
+        <div className="hidden ml-36 md:flex items-center gap-4">
           <IoSearchOutline size={20} />
           <LuShoppingCart size={20} />
         </div>

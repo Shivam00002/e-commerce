@@ -36,7 +36,7 @@ const HomePage = ({ numberOfCategories }) => {
   };
 
   return (
-    <div className="md:mt-40 mt-14 md:w-[400px] w-full h-fit mx-auto shadow-md rounded-md px-4 py-4">
+    <div className="md:mt-40 -z-50 bg-white mt-14 md:w-[400px] w-full h-fit mx-auto shadow-md rounded-md px-4 py-4">
       <h2 className="text-center font-semibold md:text-[25px] text-[22px]">
         Please mark your interests!
       </h2>
