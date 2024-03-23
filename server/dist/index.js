@@ -57,6 +57,21 @@ function startServer() {
                 res.status(500).json({ message: "Internal server error" });
             }
         }));
+        // GET user by ID
+        app.get("/users/:id", (req, res) => __awaiter(this, void 0, void 0, function* () {
+            try {
+                const userId = req.params.id;
+                const user = yield user_1.default.findById(userId);
+                if (!user) {
+                    return res.status(404).json({ message: "User not found" });
+                }
+                res.status(200).json(user);
+            }
+            catch (error) {
+                console.error("Error fetching user:", error);
+                res.status(500).json({ message: "Internal server error" });
+            }
+        }));
         app.post("/register", (req, res) => __awaiter(this, void 0, void 0, function* () {
             try {
                 const { username, email, password } = req.body;
