@@ -1,6 +1,33 @@
-import React from "react";
+import React, { useState } from "react";
+import axios from "axios";
 
 const Signup = () => {
+  const [formData, setFormData] = useState({
+    username: "",
+    email: "",
+    password: "",
+  });
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await axios.post(
+        "https://e-commerce-dom5.onrender.com/register",
+        formData
+      );
+      console.log("Signup successful:", response.data);
+      // Handle success, maybe redirect or show a success message
+    } catch (error) {
+      console.error("Signup failed:", error);
+      // Handle error, maybe show an error message
+    }
+  };
+
   return (
     <div className="mt-16 bg-white border md:w-[400px] mx-auto border-gray-200 rounded-xl shadow-sm dark:bg-gray-800 dark:border-gray-700">
       <div className="p-4 sm:p-7">
@@ -11,20 +38,22 @@ const Signup = () => {
         </div>
 
         <div className="mt-5">
-          <form>
+          <form onSubmit={handleSubmit}>
             <div className="grid gap-y-4">
               <div>
                 <label
-                  for="name"
+                  htmlFor="username"
                   className="block text-sm mb-2 dark:text-white"
                 >
-                  Name
+                  Username
                 </label>
                 <div className="relative">
                   <input
                     type="text"
-                    id="name"
-                    name="name"
+                    id="username"
+                    name="username"
+                    value={formData.username}
+                    onChange={handleChange}
                     className="py-3 border px-4 block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400 dark:focus:ring-gray-600"
                     required
                     placeholder="Enter"
@@ -35,7 +64,7 @@ const Signup = () => {
 
               <div>
                 <label
-                  for="email"
+                  htmlFor="email"
                   className="block text-sm mb-2 dark:text-white"
                 >
                   Email
@@ -45,6 +74,8 @@ const Signup = () => {
                     type="email"
                     id="email"
                     name="email"
+                    value={formData.email}
+                    onChange={handleChange}
                     className="py-3 border px-4 block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400 dark:focus:ring-gray-600"
                     required
                     placeholder="Enter"
@@ -55,7 +86,7 @@ const Signup = () => {
 
               <div>
                 <label
-                  for="password"
+                  htmlFor="password"
                   className="block text-sm mb-2 dark:text-white"
                 >
                   Password
@@ -65,6 +96,8 @@ const Signup = () => {
                     type="password"
                     id="password"
                     name="password"
+                    value={formData.password}
+                    onChange={handleChange}
                     className="py-3 border px-4 block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400 dark:focus:ring-gray-600"
                     required
                     placeholder="Enter"
@@ -80,7 +113,7 @@ const Signup = () => {
                 CREATE ACCOUNT
               </button>
 
-              <p className="mt-2  text-center text-sm text-gray-600 dark:text-gray-400">
+              <p className="mt-2 text-center text-sm text-gray-600 dark:text-gray-400">
                 have an Account?
                 <a
                   className=" ml-1 decoration-2 hover:underline font-medium text-black"

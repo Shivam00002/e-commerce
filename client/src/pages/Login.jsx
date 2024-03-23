@@ -1,6 +1,45 @@
-import React from "react";
+import React, { useState } from "react";
+import axios from "axios";
+import { useRouter } from "next/router";
+import Cookies from "js-cookie";
 
 const Login = () => {
+  const router = useRouter();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+
+  const handleEmailChange = (e) => {
+    setEmail(e.target.value);
+  };
+
+  const handlePasswordChange = (e) => {
+    setPassword(e.target.value);
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await axios.post(
+        "https://e-commerce-dom5.onrender.com/login",
+        {
+          email,
+          password,
+        }
+      );
+      console.log("Login successful:", response.data);
+
+      // Save token as a cookie
+      Cookies.set("token", response.data.token, { expires: 7 }); // Expires in 7 days
+
+      // Redirect to homepage after successful login
+      router.push("/");
+    } catch (error) {
+      console.error("Login failed:", error.response.data);
+      setError("Invalid email or password. Please try again.");
+    }
+  };
+
   return (
     <div className="mt-16 bg-white border md:w-[400px] mx-auto border-gray-200 rounded-xl shadow-sm dark:bg-gray-800 dark:border-gray-700">
       <div className="p-4 sm:p-7">
@@ -11,11 +50,11 @@ const Login = () => {
         </div>
         <p className="text-center">The next gen business marketplace</p>
         <div className="mt-5">
-          <form>
+          <form onSubmit={handleSubmit}>
             <div className="grid gap-y-4">
               <div>
                 <label
-                  for="email"
+                  htmlFor="email"
                   className="block text-sm mb-2 dark:text-white"
                 >
                   Email
@@ -25,17 +64,18 @@ const Login = () => {
                     type="email"
                     id="email"
                     name="email"
+                    value={email}
+                    onChange={handleEmailChange}
                     className="py-3 border px-4 block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400 dark:focus:ring-gray-600"
                     required
                     placeholder="Enter"
-                    aria-describedby="password-error"
                   />
                 </div>
               </div>
 
               <div>
                 <label
-                  for="password"
+                  htmlFor="password"
                   className="block text-sm mb-2 dark:text-white"
                 >
                   Password
@@ -45,10 +85,11 @@ const Login = () => {
                     type="password"
                     id="password"
                     name="password"
+                    value={password}
+                    onChange={handlePasswordChange}
                     className="py-3 border px-4 block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400 dark:focus:ring-gray-600"
                     required
                     placeholder="Enter"
-                    aria-describedby="confirm-password-error"
                   />
                 </div>
               </div>
@@ -69,6 +110,7 @@ const Login = () => {
                   SIGN UP
                 </a>
               </p>
+              {error && <p className="text-red-500 text-sm mt-2">{error}</p>}
             </div>
           </form>
         </div>
