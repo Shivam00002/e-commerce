@@ -2,16 +2,25 @@ import React, { useState, useEffect } from "react";
 import { IoSearchOutline } from "react-icons/io5";
 import { LuShoppingCart } from "react-icons/lu";
 import Cookies from "js-cookie";
-import jwt from "jsonwebtoken"
+import jwt from "jsonwebtoken";
+import logout from "./logout";
+import { useRouter } from "next/router";
 const Navbar = () => {
   const [username, setUsername] = useState("");
   const token = Cookies.get("token");
-  
+  const COOKIE_NAME = "token";
+  const router = useRouter();
+
+  const handleLogout = () => {
+    logout(COOKIE_NAME);
+    router.push("/Signup");
+  };
+
   const decodeCookie = (token) => {
     try {
       if (token) {
         const decodedData = jwt.decode(token);
-        setUsername(decodedData.username)
+        setUsername(decodedData.username);
       }
     } catch (error) {
       console.error("Error decoding token:", error);
@@ -19,7 +28,6 @@ const Navbar = () => {
     }
   };
 
-  
   useEffect(() => {
     decodeCookie(token);
   }, [token]);
@@ -68,8 +76,9 @@ const Navbar = () => {
           </a>
         ))}
       </div>
+
       {isMobileMenuOpen && (
-        <div className="md:hidden absolute top-12 right-0 bg-[#edfbed] border shadow-md py-2 px-6">
+        <div className="md:hidden absolute top-12 right-0 bg-white border shadow-md py-2 px-6">
           {NavLinks.map((el, index) => (
             <a
               className="font-semibold md:text-[17px] cursor-pointer "
@@ -91,6 +100,11 @@ const Navbar = () => {
         <div className="hidden ml-36 md:flex items-center gap-4">
           <IoSearchOutline size={20} />
           <LuShoppingCart size={20} />
+          {token && (
+            <button className="text-sm text-red-800" onClick={handleLogout}>
+              Logout
+            </button>
+          )}
         </div>
       </div>
     </div>

@@ -23,10 +23,8 @@ const Signup = () => {
       );
       console.log("Signup successful:", response.data);
       router.push(`/otp?verification_id=${response.data.token}`);
-      // Handle success, maybe redirect or show a success message
     } catch (error) {
       console.error("Signup failed:", error);
-      // Handle error, maybe show an error message
     }
   };
 

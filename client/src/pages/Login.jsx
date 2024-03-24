@@ -8,6 +8,7 @@ const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleEmailChange = (e) => {
     setEmail(e.target.value);
@@ -19,6 +20,7 @@ const Login = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setIsLoading(true);
     try {
       const response = await axios.post(
         "https://e-commerce-dom5.onrender.com/login",
@@ -29,14 +31,13 @@ const Login = () => {
       );
       console.log("Login successful:", response.data);
 
-      // Save token as a cookie
-      Cookies.set("token", response.data.token, { expires: 7 }); // Expires in 7 days
-
-      // Redirect to homepage after successful login
+      Cookies.set("token", response.data.token, { expires: 7 });
       router.push("/");
     } catch (error) {
       console.error("Login failed:", error.response.data);
       setError("Invalid email or password. Please try again.");
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -97,8 +98,9 @@ const Login = () => {
               <button
                 type="submit"
                 className="w-full py-2 px-4 inline-flex justify-center items-center gap-x-2 text-[13px] font-semibold rounded-lg border border-transparent  bg-black text-white hover:bg-gray-700 disabled:opacity-50 disabled:pointer-events-none dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
+                disabled={isLoading}
               >
-                LOGIN
+                {isLoading ? "Loading..." : "LOGIN"}
               </button>
 
               <p className="mt-2  text-center text-sm text-gray-600 dark:text-gray-400">
