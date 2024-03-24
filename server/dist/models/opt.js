@@ -1,5 +1,4 @@
 "use strict";
-// models/user.ts
 var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
     var desc = Object.getOwnPropertyDescriptor(m, k);
@@ -25,12 +24,12 @@ var __importStar = (this && this.__importStar) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const mongoose_1 = __importStar(require("mongoose"));
-const UserSchema = new mongoose_1.Schema({
+const OTPSchema = new mongoose_1.Schema({
+    email: { type: String, required: true },
+    otp: { type: Number, required: true },
+    expirationSeconds: { type: String, required: true },
     username: { type: String, required: true },
-    email: { type: String, required: true, unique: true },
     password: { type: String, required: true },
-    otp: { type: String },
-    interest: []
-});
-const User = mongoose_1.default.model("User", UserSchema);
-exports.default = User;
+}, { timestamps: true });
+const OTP = mongoose_1.default.model("OTP", OTPSchema);
+exports.default = OTP;

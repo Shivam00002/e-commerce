@@ -4,17 +4,21 @@ import http from "http";
 import { DB_connection } from "./config/mongodb";
 import "dotenv/config";
 import express from "express";
-import bcrypt from "bcrypt"; 
-import jwt from "jsonwebtoken"; 
+import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
 import User from "./models/user";
-
+import OTP from "./models/opt";
+import { generateOTP, SaveOTP, DeleteOTP, SendEmail } from "./utils";
 async function startServer() {
   const app = express();
   const server = http.createServer(app);
   const PORT = process.env.PORT || 8000;
   const whitelist = ["http://localhost:3000"];
   const corsOptions: CorsOptions = {
-    origin: function (origin: string | undefined, callback: (err: Error | null, allow?: boolean) => void) {
+    origin: function (
+      origin: string | undefined,
+      callback: (err: Error | null, allow?: boolean) => void
+    ) {
       if (!origin || whitelist.indexOf(origin) !== -1) {
         callback(null, true);
       } else {
@@ -62,25 +66,90 @@ async function startServer() {
   });
 
   app.post("/register", async (req, res) => {
+    console.log(req.body);
     try {
       const { username, email, password } = req.body;
 
       const existingUser = await User.findOne({ email });
+      const AlreadySendOTP = await OTP.findOne({ email });
       if (existingUser) {
-        return res.status(400).json({ message: "User already exists" });
+        return res.status(400).json({
+          status: false,
+          message: "User Already Exists",
+        });
       }
-
-      // Hash the password before saving it to the database
+      if (AlreadySendOTP) {
+        return res.status(400).json({
+          status: false,
+          message: "OTP Already Send,Please Check your email",
+        });
+      }
       const hashedPassword = await bcrypt.hash(password, 10);
+      const otp = generateOTP();
+      const otpData = {
+        username,
+        email,
+        password: hashedPassword,
+        otp,
+        expirationSeconds: "10min",
+      };
+      const otpResult = await SaveOTP(otpData);
+      await SendEmail({
+        email: otpData.email,
+        otp: otpData.otp,
+      });
 
-      const newUser = new User({ username, email, password: hashedPassword });
+      setTimeout(async () => {
+        await DeleteOTP(otpResult.email);
 
-      await newUser.save();
+        console.log(`OTP for ${email} deleted from database`);
+      }, 1000 * 60 * 5);
 
-      res.status(201).json({ message: "User registered successfully" });
+      const token = jwt.sign(
+        { userId: otpResult._id, email: otpResult.email },
+        process.env.JWT_SECRET!,
+        {
+          expiresIn: "5m",
+        }
+      );
+
+      res.status(201).json({ status: true, message: "otp send", token });
     } catch (error) {
       console.error("Error registering user:", error);
       res.status(500).json({ message: "Internal server error" });
+    }
+  });
+  app.post("/verifyotp", async (req, res) => {
+    const { email, otp } = req.body;
+    console.log(email, otp);
+    const user = await OTP.findOne({ email });
+    if (user?.otp === Number(otp)) {
+      const newUser = new User({
+        username: user?.username,
+        email: user?.email,
+        password: user?.password,
+      });
+      await newUser.save();
+      const token = jwt.sign(
+        { userId: user?._id, username: user?.username },
+        process.env.JWT_SECRET!,
+        {
+          expiresIn: "15d",
+        }
+      );
+      res.cookie("token", token, {
+        maxAge: 15 * 24 * 60 * 60 * 1000,
+        httpOnly: false,
+        sameSite: "lax",
+      });
+
+      res
+        .status(201)
+        .json({ status: true, message: "User Successfully Register" });
+    } else {
+      res
+        .status(401)
+        .json({ status: false, message: "your otp expired,please send again" });
     }
   });
 
@@ -100,30 +169,44 @@ async function startServer() {
         return res.status(401).json({ message: "Invalid password" });
       }
 
-      // Generate JWT token
-      const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET!, { expiresIn: "1h" });
+      const token = jwt.sign(
+        { userId: user._id, username: user.username },
+        process.env.JWT_SECRET!,
+        {
+          expiresIn: "1h",
+        }
+      );
 
-      // Set the token as a cookie
-      res.cookie("token", token, { httpOnly: true });
-
+      res.cookie("token", token, {
+        maxAge: 15 * 24 * 60 * 60 * 1000,
+        httpOnly: false,
+        sameSite: "lax",
+      });
       res.status(200).json({ message: "Login successful", token });
     } catch (error) {
       console.error("Error logging in:", error);
       res.status(500).json({ message: "Internal server error" });
     }
   });
+  app.post("/interests", async (req, res) => {
+    const { interests, id } = req.body;
+    const user:any = await User.findById({ _id: id });
+    if (user) {
+      return res.status(401).json({ message: "User not find" });
+    }
+    user?.interest.push(...interests);
 
+    res.status(201).json({ status: true, message: "Successfully Added" });
+  });
   const App = server.listen(PORT, () => {
     console.log(`Server is running on ${PORT}`);
   });
   process.on("SIGTERM", () => {
     App.close(() => {
-      
       console.log("Server disconnected gracefully");
       process.exit(0);
     });
   });
-
 }
 
 startServer();
