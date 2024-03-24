@@ -5,12 +5,16 @@ import Cookies from "js-cookie";
 import jwt from "jsonwebtoken";
 import logout from "./logout";
 import { useRouter } from "next/router";
-
 const Navbar = () => {
   const [username, setUsername] = useState("");
   const token = Cookies.get("token");
   const COOKIE_NAME = "token";
   const router = useRouter();
+
+  const handleLogout = () => {
+    logout(COOKIE_NAME);
+    router.push("/Signup");
+  };
 
   const decodeCookie = (token) => {
     try {
@@ -28,12 +32,6 @@ const Navbar = () => {
     decodeCookie(token);
   }, [token]);
 
-  useEffect(() => {
-    if (!token) {
-      router.push("/Signup");
-    }
-  }, [token]);
-
   const NavLinks = [
     { name: "Categories", link: "" },
     { name: "Sales", link: "" },
@@ -46,11 +44,6 @@ const Navbar = () => {
 
   const toggleMobileMenu = () => {
     setMobileMenuOpen(!isMobileMenuOpen);
-  };
-
-  const handleLogout = () => {
-    logout(COOKIE_NAME);
-    router.push("/Signup");
   };
 
   return (
