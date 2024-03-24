@@ -2,12 +2,32 @@ import React, { useState, useEffect } from "react";
 import faker from "faker";
 import { Pagination } from "./Pagination";
 import { CustomCheckbox } from "./CustomCheckbox";
+import jwt from "jsonwebtoken";
+import Cookies from "js-cookie";
 
 const HomePage = ({ numberOfCategories }) => {
+  const [id, setId] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedInterests, setSelectedInterests] = useState([]);
   const categoriesPerPage = 10;
   const [fakeCategories, setFakeCategories] = useState([]);
+  const token = Cookies.get("token");
+
+  const decodeCookie = (token) => {
+    try {
+      if (token) {
+        const decodedData = jwt.decode(token);
+        setId(decodedData.userId);
+      }
+    } catch (error) {
+      console.error("Error decoding token:", error);
+    }
+  };
+
+  useEffect(() => {
+    decodeCookie(token);
+    console.log("idddddd", id);
+  }, [token]);
 
   useEffect(() => {
     const categories = Array.from({ length: numberOfCategories }, () =>

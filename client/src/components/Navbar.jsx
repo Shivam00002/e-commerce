@@ -6,6 +6,7 @@ import jwt from "jsonwebtoken"
 const Navbar = () => {
   const [username, setUsername] = useState("");
   const token = Cookies.get("token");
+  
   const decodeCookie = (token) => {
     try {
       if (token) {
@@ -17,16 +18,18 @@ const Navbar = () => {
       return null;
     }
   };
+
+  
   useEffect(() => {
     decodeCookie(token);
   }, [token]);
 
   const NavLinks = [
-    { name: "Categories", link: "/" },
-    { name: "Sales", link: "/" },
-    { name: "Clearance", link: "/" },
-    { name: "New Stock", link: "/" },
-    { name: "Tranding", link: "/" },
+    { name: "Categories", link: "" },
+    { name: "Sales", link: "" },
+    { name: "Clearance", link: "" },
+    { name: "New Stock", link: "" },
+    { name: "Tranding", link: "" },
   ];
 
   const [isMobileMenuOpen, setMobileMenuOpen] = useState(false);

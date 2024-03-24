@@ -30,8 +30,9 @@ const Otpform = () => {
         otp,
         email: user.email,
       };
+
       const response = await axios.post(
-        "http://localhost:8000/verifyotp",
+        "https://e-commerce-dom5.onrender.com/verifyotp",
         data,
         { withCredentials: true }
       );

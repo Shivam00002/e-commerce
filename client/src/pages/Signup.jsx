@@ -13,12 +13,12 @@ const Signup = () => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
   };
-  // https://e-commerce-dom5.onrender.com/register
+ 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       const response = await axios.post(
-        "http://localhost:8000/register",
+        "https://e-commerce-dom5.onrender.com/register",
         formData
       );
       console.log("Signup successful:", response.data);
