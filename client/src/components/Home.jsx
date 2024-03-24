@@ -26,7 +26,6 @@ const HomePage = ({ numberOfCategories }) => {
 
   useEffect(() => {
     decodeCookie(token);
-    console.log("idddddd", id);
   }, [token]);
 
   useEffect(() => {
@@ -64,19 +63,21 @@ const HomePage = ({ numberOfCategories }) => {
       <p className="font-semibold md:text-[15px] py-2 md:py-4">
         My saved interests!
       </p>
-      <ul>
-        {currentCategories.map((category, index) => (
-          <li key={index}>
-            <label className="inline-flex items-center">
-              <CustomCheckbox
-                checked={selectedInterests.includes(category)}
-                onChange={() => handleInterestToggle(category)}
-              />
-              <span className="ml-2">{category}</span>
-            </label>
-          </li>
-        ))}
-      </ul>
+      {fakeCategories && fakeCategories.length > 0 && (
+        <ul>
+          {currentCategories.map((category, index) => (
+            <li key={index}>
+              <label className="inline-flex items-center">
+                <CustomCheckbox
+                  checked={selectedInterests.includes(category)}
+                  onChange={() => handleInterestToggle(category)}
+                />
+                <span className="ml-2">{category}</span>
+              </label>
+            </li>
+          ))}
+        </ul>
+      )}
 
       <Pagination
         totalPages={Math.ceil(fakeCategories.length / categoriesPerPage)}
