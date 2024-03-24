@@ -1,87 +1,66 @@
-import React from "react";
+import axios from "axios";
+import React, { useState } from "react";
+import jwt from "jsonwebtoken";
+import { useRouter, useSearchParams } from "next/navigation";
 
 const Otpform = () => {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const verification_id = searchParams.get("verification_id");
+
+  const decodeCookie = (token) => {
+    console.log("decoderfound for token", token);
+    try {
+      if (token) {
+        const decodedData = jwt.decode(token);
+        return decodedData;
+      }
+    } catch (error) {
+      console.error("Error decoding token:", error);
+      return null;
+    }
+  };
+
+  const [otp, setOTP] = useState(0);
+  const VerifyOTP = async (e) => {
+    e.preventDefault();
+    try {
+      const user = decodeCookie(verification_id);
+      const data = {
+        otp,
+        email: user.email,
+      };
+      const response = await axios.post(
+        "http://localhost:8000/verifyotp",
+        data,
+        { withCredentials: true }
+      );
+      if (response.data.status) {
+        router.push("/");
+      } else {
+        alert(response.data.message);
+      }
+    } catch (err) {
+      return err;
+    }
+  };
   return (
     <div className="max-w-md mx-auto border px-4 py-4 mt-20 rounded">
       <h2 className="text-center font-bold md:text-[24px]  ">
-        Verify your emai
+        Verify your email
       </h2>
       <p className="text-center font-gray-200 leading-5 text-[16px]">
         Enter the 8 digit code you have received on anu***@gmail.com
       </p>
-      <form className="shadow-md  px-4 py-10 ">
+      <form className="shadow-md  px-4 py-10" onSubmit={(e) => VerifyOTP(e)}>
         <p className="px-[3px] ">Code</p>
         <div className="flex justify-center gap-2 mb-6">
           <input
-            className="h-10 w-10 text-center border rounded-md shadow-sm focus:border-teal-500 focus:ring-teal-500"
+            onChange={(e) => setOTP(e.target.value)}
+            className="bg-gray-50 border text-center border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
             type="text"
-            maxlength="1"
-            pattern="[0-9]"
-            inputmode="numeric"
-            autocomplete="one-time-code"
-            required
-          />
-          <input
-            className="h-10 w-10 text-center border rounded-md shadow-sm focus:border-teal-500 focus:ring-teal-500"
-            type="text"
-            maxlength="1"
-            pattern="[0-9]"
-            inputmode="numeric"
-            autocomplete="one-time-code"
-            required
-          />
-          <input
-            className="h-10 w-10 text-center border rounded-md shadow-sm focus:border-teal-500 focus:ring-teal-500"
-            type="text"
-            maxlength="1"
-            pattern="[0-9]"
-            inputmode="numeric"
-            autocomplete="one-time-code"
-            required
-          />
-          <input
-            className="h-10 w-10 text-center border rounded-md shadow-sm focus:border-teal-500 focus:ring-teal-500"
-            type="text"
-            maxlength="1"
-            pattern="[0-9]"
-            inputmode="numeric"
-            autocomplete="one-time-code"
-            required
-          />
-          <input
-            className="h-10 w-10 text-center border rounded-md shadow-sm focus:border-teal-500 focus:ring-teal-500"
-            type="text"
-            maxlength="1"
-            pattern="[0-9]"
-            inputmode="numeric"
-            autocomplete="one-time-code"
-            required
-          />
-          <input
-            className="h-10 w-10 text-center border rounded-md shadow-sm focus:border-teal-500 focus:ring-teal-500"
-            type="text"
-            maxlength="1"
-            pattern="[0-9]"
-            inputmode="numeric"
-            autocomplete="one-time-code"
-            required
-          />
-          <input
-            className="h-10 w-10 text-center border rounded-md shadow-sm focus:border-teal-500 focus:ring-teal-500"
-            type="text"
-            maxlength="1"
-            pattern="[0-9]"
-            inputmode="numeric"
-            autocomplete="one-time-code"
-            required
-          />
-          <input
-            className="h-10 w-10 text-center border rounded-md shadow-sm focus:border-teal-500 focus:ring-teal-500"
-            type="text"
-            maxlength="1"
-            pattern="[0-9]"
-            inputmode="numeric"
-            autocomplete="one-time-code"
+            maxlength="4"
+            placeholder="1234"
             required
           />
         </div>

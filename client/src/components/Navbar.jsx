@@ -2,16 +2,24 @@ import React, { useState, useEffect } from "react";
 import { IoSearchOutline } from "react-icons/io5";
 import { LuShoppingCart } from "react-icons/lu";
 import Cookies from "js-cookie";
-
+import jwt from "jsonwebtoken"
 const Navbar = () => {
   const [username, setUsername] = useState("");
-
-  useEffect(() => {
-    const usernameFromCookie = Cookies.get("username");
-    if (usernameFromCookie) {
-      setUsername(usernameFromCookie);
+  const token = Cookies.get("token");
+  const decodeCookie = (token) => {
+    try {
+      if (token) {
+        const decodedData = jwt.decode(token);
+        setUsername(decodedData.username)
+      }
+    } catch (error) {
+      console.error("Error decoding token:", error);
+      return null;
     }
-  }, []);
+  };
+  useEffect(() => {
+    decodeCookie(token);
+  }, [token]);
 
   const NavLinks = [
     { name: "Categories", link: "/" },

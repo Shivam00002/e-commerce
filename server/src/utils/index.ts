@@ -21,7 +21,7 @@ export const SaveOTP = async (data: {
 export const SendEmail = async (data: { email: string; otp: number }) => {
   try {
     const info = await Transporter.sendMail({
-      from: "ajaysehwal786@gmail.com", // sender address
+      from: "", // sender address
       to: data.email, // list of receivers
       subject: "Email Verification", // Subject line
       text: "Hello world?", // plain text body

@@ -32,7 +32,7 @@ exports.SaveOTP = SaveOTP;
 const SendEmail = (data) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const info = yield nodemailer_1.Transporter.sendMail({
-            from: "ajaysehwal786@gmail.com", // sender address
+            from: "", // sender address
             to: data.email, // list of receivers
             subject: "Email Verification", // Subject line
             text: "Hello world?", // plain text body

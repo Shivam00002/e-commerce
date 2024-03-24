@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 import axios from "axios";
-
+import { useRouter } from "next/navigation";
 const Signup = () => {
+  const router = useRouter();
   const [formData, setFormData] = useState({
     username: "",
     email: "",
@@ -12,15 +13,16 @@ const Signup = () => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
   };
-
+  // https://e-commerce-dom5.onrender.com/register
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       const response = await axios.post(
-        "https://e-commerce-dom5.onrender.com/register",
+        "http://localhost:8000/register",
         formData
       );
       console.log("Signup successful:", response.data);
+      router.push(`/otp?verification_id=${response.data.token}`);
       // Handle success, maybe redirect or show a success message
     } catch (error) {
       console.error("Signup failed:", error);

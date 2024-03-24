@@ -198,9 +198,11 @@ async function startServer() {
 
     res.status(201).json({ status: true, message: "Successfully Added" });
   });
+
   const App = server.listen(PORT, () => {
     console.log(`Server is running on ${PORT}`);
   });
+  
   process.on("SIGTERM", () => {
     App.close(() => {
       console.log("Server disconnected gracefully");
