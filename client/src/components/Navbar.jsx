@@ -46,6 +46,7 @@ const Navbar = () => {
     setMobileMenuOpen(!isMobileMenuOpen);
   };
 
+
   return (
     <div className="fixed top-0 z-50 bg-white left-0 right-0 w-full flex items-center justify-between h-fit px-4 md:px-8 py-2 shadow-lg">
       <h1 className="font-bold md:text-[20px] ">ECOMMERCE</h1>
