@@ -4,10 +4,10 @@ import mongoose, { Schema, Document } from "mongoose";
 
 export interface UserDocument extends Document {
   username: string;
-  email: string;
+  email: string; 
   password: string;
   otp?: string; 
-  interest:[]
+  interest: string[]
 }
 
 const UserSchema: Schema<UserDocument> = new Schema({

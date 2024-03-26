@@ -4,37 +4,82 @@ import { Pagination } from "./Pagination";
 import { CustomCheckbox } from "./CustomCheckbox";
 import jwt from "jsonwebtoken";
 import Cookies from "js-cookie";
+import axios from "axios";
 
-const HomePage = ({ numberOfCategories }) => {
-  const [id, setId] = useState("");
+const fakeCategories = Array.from({ length: 100 }, () => ({
+  name: faker.commerce.department(),
+  id: faker.datatype.uuid(),
+}));
+
+const HomePage = () => {
+  const [userId, setUserId] = useState(""); // Changed to userId
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedInterests, setSelectedInterests] = useState([]);
   const categoriesPerPage = 10;
-  const [fakeCategories, setFakeCategories] = useState([]);
-  const token = Cookies.get("token");
 
-  const decodeCookie = (token) => {
-    try {
-      if (token) {
-        const decodedData = jwt.decode(token);
-        setId(decodedData.userId);
+  useEffect(() => {
+    const token = Cookies.get("token");
+    const decodeCookie = () => {
+      try {
+        if (token) {
+          const decodedData = jwt.decode(token);
+          setUserId(decodedData.userId);
+        }
+      } catch (error) {
+        console.error("Error decoding token:", error);
       }
+    };
+
+    decodeCookie();
+  }, []); // No dependency, runs only once on mount
+
+  useEffect(() => {
+    if (userId) {
+      postSelectedInterests();
+      deleteUnselectedInterests();
+    }
+  }, [selectedInterests, userId]); // Only call functions when dependencies change
+
+  const postSelectedInterests = async () => {
+    try {
+      const data = {
+        userId: userId,
+        interests: selectedInterests.map((interest) => interest.id),
+      };
+
+      const response = await axios.post(
+        "https://e-commerce-dom5.onrender.com/interests",
+        data
+      );
+      console.log("Interests posted:", response.data);
     } catch (error) {
-      console.error("Error decoding token:", error);
+      console.error("Error posting interests:", error);
     }
   };
 
-  useEffect(() => {
-    decodeCookie(token);
-    console.log("idddddd", id);
-  }, [token]);
+  const deleteUnselectedInterests = async () => {
+    try {
+      const unselectedInterests = fakeCategories
+        .map((category) => category.id)
+        .filter(
+          (categoryId) =>
+            !selectedInterests.some((interest) => interest.id === categoryId)
+        );
 
-  useEffect(() => {
-    const categories = Array.from({ length: numberOfCategories }, () =>
-      faker.commerce.department()
-    );
-    setFakeCategories(categories);
-  }, [numberOfCategories]);
+      const data = {
+        userId: userId,
+        interests: unselectedInterests,
+      };
+
+      const response = await axios.delete(
+        "https://e-commerce-dom5.onrender.com/interests",
+        { data }
+      );
+      console.log("Unselected interests deleted:", response.data);
+    } catch (error) {
+      console.error("Error deleting unselected interests:", error);
+    }
+  };
 
   const indexOfLastCategory = currentPage * categoriesPerPage;
   const indexOfFirstCategory = indexOfLastCategory - categoriesPerPage;
@@ -47,8 +92,8 @@ const HomePage = ({ numberOfCategories }) => {
 
   const handleInterestToggle = (interest) => {
     setSelectedInterests((prevInterests) => {
-      if (prevInterests.includes(interest)) {
-        return prevInterests.filter((item) => item !== interest);
+      if (prevInterests.some((item) => item.id === interest.id)) {
+        return prevInterests.filter((item) => item.id !== interest.id);
       } else {
         return [...prevInterests, interest];
       }
@@ -66,13 +111,15 @@ const HomePage = ({ numberOfCategories }) => {
       </p>
       <ul>
         {currentCategories.map((category, index) => (
-          <li key={index}>
+          <li key={category.id}>
             <label className="inline-flex items-center">
               <CustomCheckbox
-                checked={selectedInterests.includes(category)}
+                checked={selectedInterests.some(
+                  (item) => item.id === category.id
+                )}
                 onChange={() => handleInterestToggle(category)}
               />
-              <span className="ml-2">{category}</span>
+              <span className="ml-2">{category.name}</span>
             </label>
           </li>
         ))}

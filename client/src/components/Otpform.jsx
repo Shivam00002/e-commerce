@@ -37,7 +37,7 @@ const Otpform = () => {
         { withCredentials: true }
       );
       if (response.data.status) {
-        router.push("/");
+        router.push("/Login");
       } else {
         alert(response.data.message);
       }

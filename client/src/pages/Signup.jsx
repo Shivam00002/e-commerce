@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { useRouter } from "next/navigation";
+
 const Signup = () => {
   const router = useRouter();
   const [formData, setFormData] = useState({
@@ -8,14 +9,16 @@ const Signup = () => {
     email: "",
     password: "",
   });
+  const [loading, setLoading] = useState(false);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
   };
- 
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
     try {
       const response = await axios.post(
         "https://e-commerce-dom5.onrender.com/register",
@@ -25,6 +28,8 @@ const Signup = () => {
       router.push(`/otp?verification_id=${response.data.token}`);
     } catch (error) {
       console.error("Signup failed:", error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -109,8 +114,9 @@ const Signup = () => {
               <button
                 type="submit"
                 className="w-full py-2 px-4 inline-flex justify-center items-center gap-x-2 text-[13px] font-semibold rounded-lg border border-transparent  bg-black text-white hover:bg-gray-700 disabled:opacity-50 disabled:pointer-events-none dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
+                disabled={loading}
               >
-                CREATE ACCOUNT
+                {loading ? "Loading..." : "CREATE ACCOUNT"}
               </button>
 
               <p className="mt-2 text-center text-sm text-gray-600 dark:text-gray-400">
