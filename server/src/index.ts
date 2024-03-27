@@ -30,7 +30,7 @@ async function startServer() {
     optionsSuccessStatus: 200,
   };
 
-  app.use(cors());
+  app.use(cors(corsOptions));
   app.use(express.json());
   app.use(cookieParser());
 
