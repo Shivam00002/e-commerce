@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import axios from "axios";
 import { useRouter } from "next/router";
 import Cookies from "js-cookie";
+import toast from "react-hot-toast";
 
 const Login = () => {
   const router = useRouter();
@@ -29,12 +30,14 @@ const Login = () => {
           password,
         }
       );
+      toast.success("Login successful!");
       console.log("Login successful:", response.data);
 
       Cookies.set("token", response.data.token, { expires: 7 });
       router.push("/");
     } catch (error) {
       console.error("Login failed:", error.response.data);
+      toast.error("Login failed!");
       setError("Invalid email or password. Please try again.");
     } finally {
       setIsLoading(false);

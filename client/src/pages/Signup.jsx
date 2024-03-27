@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { useRouter } from "next/navigation";
+import toast from "react-hot-toast";
 
 const Signup = () => {
   const router = useRouter();
@@ -18,16 +19,26 @@ const Signup = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    // Check if any field is empty
+    if (!formData.username || !formData.email || !formData.password) {
+      toast.error("Please fill all the fields");
+      return;
+    }
+
     setLoading(true);
+
     try {
       const response = await axios.post(
         "https://e-commerce-dom5.onrender.com/register",
         formData
       );
       console.log("Signup successful:", response.data);
+      toast.success("Registered succcessfully!");
       router.push(`/otp?verification_id=${response.data.token}`);
     } catch (error) {
       console.error("Signup failed:", error);
+      toast.error("Signup failed !");
     } finally {
       setLoading(false);
     }

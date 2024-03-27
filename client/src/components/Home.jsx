@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import faker from "faker";
 import { Pagination } from "./Pagination";
@@ -13,11 +12,11 @@ const fakeCategories = Array.from({ length: 100 }, () => ({
 }));
 
 const HomePage = () => {
-  const [userId, setUserId] = useState(""); // Changed to userId
+  const [userId, setUserId] = useState(""); 
   const [currentPage, setCurrentPage] = useState(1);
-  const [selectedInterests, setSelectedInterests] = useState("");
-  const categoriesPerPage = 10;
+  const [selectedInterests, setSelectedInterests] = useState([]);
   console.log(selectedInterests);
+
   useEffect(() => {
     const token = Cookies.get("token");
     const decodeCookie = () => {
@@ -32,14 +31,13 @@ const HomePage = () => {
     };
 
     decodeCookie();
-  }, []); // No dependency, runs only once on mount
+  }, []);
 
   useEffect(() => {
     if (userId) {
       postSelectedInterests();
-      deleteUnselectedInterests();
     }
-  }, [selectedInterests, userId]); // Only call functions when dependencies change
+  }, [selectedInterests, userId]); 
 
   const postSelectedInterests = async () => {
     try {
@@ -47,43 +45,19 @@ const HomePage = () => {
         id: userId,
         interests: selectedInterests.map((interest) => interest.name),
       };
-      console.log(interests); ['movies','toys']
-      // const response = await axios.post(
-      //   "https://e-commerce-dom5.onrender.com/interests",
-      //   data
-      // );
-      // console.log("Interests posted:", response.data);
+
+      const response = await axios.post(
+        "https://e-commerce-dom5.onrender.com/interests",
+        data
+      );
+      console.log("Interests posted:", response.data);
     } catch (error) {
       console.error("Error posting interests:", error);
     }
   };
 
-  // const deleteUnselectedInterests = async () => {
-  //   try {
-  //     const unselectedInterests = fakeCategories
-  //       .map((category) => category.id)
-  //       .filter(
-  //         (categoryId) =>
-  //           !selectedInterests.some((interest) => interest.id === categoryId)
-  //       );
-
-  //     const data = {
-  //       userId: userId,
-  //       interests: unselectedInterests,
-  //     };
-
-  //     const response = await axios.delete(
-  //       "https://e-commerce-dom5.onrender.com/interests",
-  //       { data }
-  //     );
-  //     console.log("Unselected interests deleted:", response.data);
-  //   } catch (error) {
-  //     console.error("Error deleting unselected interests:", error);
-  //   }
-  // };
-
-  const indexOfLastCategory = currentPage * categoriesPerPage;
-  const indexOfFirstCategory = indexOfLastCategory - categoriesPerPage;
+  const indexOfLastCategory = currentPage * 10;
+  const indexOfFirstCategory = indexOfLastCategory - 10;
   const currentCategories = fakeCategories.slice(
     indexOfFirstCategory,
     indexOfLastCategory
@@ -127,7 +101,7 @@ const HomePage = () => {
       </ul>
 
       <Pagination
-        totalPages={Math.ceil(fakeCategories.length / categoriesPerPage)}
+        totalPages={Math.ceil(fakeCategories.length / 10)}
         currentPage={currentPage}
         onPageChange={handlePageChange}
       />

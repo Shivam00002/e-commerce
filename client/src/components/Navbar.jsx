@@ -7,7 +7,7 @@ import logout from "./logout";
 import { useRouter } from "next/router";
 const Navbar = () => {
   const [username, setUsername] = useState("");
-  const token = Cookies.get("token");
+  const token = Cookies.get("token") || null;
   const COOKIE_NAME = "token";
   const router = useRouter();
 
@@ -45,7 +45,6 @@ const Navbar = () => {
   const toggleMobileMenu = () => {
     setMobileMenuOpen(!isMobileMenuOpen);
   };
-
 
   return (
     <div className="fixed top-0 z-50 bg-white left-0 right-0 w-full flex items-center justify-between h-fit px-4 md:px-8 py-2 shadow-lg">
@@ -102,9 +101,11 @@ const Navbar = () => {
           <IoSearchOutline size={20} />
           <LuShoppingCart size={20} />
           {token && (
-            <button className="text-sm text-red-800" onClick={handleLogout}>
-              Logout
-            </button>
+            <div>
+              <div className="text-sm text-red-800 cursor-pointer " onClick={handleLogout}>
+                Logout
+              </div>
+            </div>
           )}
         </div>
       </div>
