@@ -27,7 +27,7 @@ function startServer() {
     return __awaiter(this, void 0, void 0, function* () {
         const app = (0, express_1.default)();
         const server = http_1.default.createServer(app);
-        const PORT = process.env.PORT || 8000;
+        const PORT = process.env.PORT || 3000;
         const whitelist = ["http://localhost:3000"];
         const corsOptions = {
             origin: function (origin, callback) {
@@ -176,6 +176,7 @@ function startServer() {
                 res.status(500).json({ message: "Internal server error" });
             }
         }));
+        //Post interest
         app.post("/interests", (req, res) => __awaiter(this, void 0, void 0, function* () {
             const { interests, id } = req.body;
             console.log(req.body);
@@ -187,6 +188,7 @@ function startServer() {
             const check = yield user.save();
             res.status(201).json({ status: true, message: "Successfully Added" });
         }));
+        //Get all interests
         app.get('/interests', (req, res) => __awaiter(this, void 0, void 0, function* () {
             const { id } = req.body;
             const user = yield user_1.default.findById({ _id: id });
@@ -195,6 +197,7 @@ function startServer() {
             }
             return res.status(200).json({ message: user.interest });
         }));
+        //Delete interest
         app.delete('/interests', (req, res) => __awaiter(this, void 0, void 0, function* () {
             const { id, deleteinterest } = req.body;
             const user = yield user_1.default.findById({ _id: id });

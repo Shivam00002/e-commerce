@@ -13,6 +13,7 @@ async function startServer() {
   const app = express();
   const server = http.createServer(app);
   const PORT = process.env.PORT || 8000;
+
   const whitelist = ["http://localhost:3000"];
   const corsOptions: CorsOptions = {
     origin: function (
@@ -188,6 +189,8 @@ async function startServer() {
       res.status(500).json({ message: "Internal server error" });
     }
   });
+
+ //Post interest
   app.post("/interests", async (req, res) => {
     const { interests, id } = req.body;
     console.log(req.body)
@@ -199,6 +202,8 @@ async function startServer() {
     const check= await user.save();
     res.status(201).json({ status: true, message: "Successfully Added" });
   });
+
+  //Get all interests
   app.get('/interests',async(req,res)=>{
      const {id}=req.body;
      const user:any = await User.findById({_id:id });
@@ -208,6 +213,8 @@ async function startServer() {
     return res.status(200).json({message:user.interest})
 
   })
+
+  //Delete interest
   app.delete('/interests',async(req,res)=>{
     const {id,deleteinterest}=req.body;
     const user:any = await User.findById({_id:id });
@@ -220,9 +227,13 @@ async function startServer() {
 
   })
 
+
+
   const App = server.listen(PORT, () => {
     console.log(`Server is running on ${PORT}`);
   });
+
+
   
   process.on("SIGTERM", () => {
     App.close(() => {
