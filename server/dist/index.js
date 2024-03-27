@@ -28,22 +28,20 @@ function startServer() {
         const app = (0, express_1.default)();
         const server = http_1.default.createServer(app);
         const PORT = process.env.PORT || 8000;
-        //const whitelist = ["http://localhost:3000","https://e-commerce-beta-mocha.vercel.app/"];
-        // const corsOptions: CorsOptions = {
-        //   origin: function (
-        //     origin: string | undefined,
-        //     callback: (err: Error | null, allow?: boolean) => void
-        //   ) {
-        //     if (!origin || whitelist.indexOf(origin) !== -1) {
-        //       callback(null, true);
-        //     } else {
-        //       callback(new Error("Not allowed by CORS"));
-        //     }
-        //   },
-        //   credentials: true,
-        //   optionsSuccessStatus: 200,
-        // };
-        app.use((0, cors_1.default)());
+        const whitelist = ["http://localhost:3000"];
+        const corsOptions = {
+            origin: function (origin, callback) {
+                if (!origin || whitelist.indexOf(origin) !== -1) {
+                    callback(null, true);
+                }
+                else {
+                    callback(new Error("Not allowed by CORS"));
+                }
+            },
+            credentials: true,
+            optionsSuccessStatus: 200,
+        };
+        app.use((0, cors_1.default)(corsOptions));
         app.use(express_1.default.json());
         app.use((0, cookie_parser_1.default)());
         (0, mongodb_1.DB_connection)();
@@ -190,7 +188,7 @@ function startServer() {
             res.status(201).json({ status: true, message: "Successfully Added" });
         }));
         app.get("/interests/:id", (req, res) => __awaiter(this, void 0, void 0, function* () {
-            const { id } = req.params;
+            const { id } = req.body;
             const user = yield user_1.default.findById({ _id: id });
             if (!user) {
                 return res.status(401).json({ message: "User not find" });
