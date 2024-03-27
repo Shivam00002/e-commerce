@@ -13,23 +13,24 @@ async function startServer() {
   const app = express();
   const server = http.createServer(app);
   const PORT = process.env.PORT || 8000;
-  const whitelist = ["http://localhost:3000","https://e-commerce-beta-mocha.vercel.app/"];
-  const corsOptions: CorsOptions = {
-    origin: function (
-      origin: string | undefined,
-      callback: (err: Error | null, allow?: boolean) => void
-    ) {
-      if (!origin || whitelist.indexOf(origin) !== -1) {
-        callback(null, true);
-      } else {
-        callback(new Error("Not allowed by CORS"));
-      }
-    },
-    credentials: true,
-    optionsSuccessStatus: 200,
-  };
+  
+  //const whitelist = ["http://localhost:3000","https://e-commerce-beta-mocha.vercel.app/"];
+  // const corsOptions: CorsOptions = {
+  //   origin: function (
+  //     origin: string | undefined,
+  //     callback: (err: Error | null, allow?: boolean) => void
+  //   ) {
+  //     if (!origin || whitelist.indexOf(origin) !== -1) {
+  //       callback(null, true);
+  //     } else {
+  //       callback(new Error("Not allowed by CORS"));
+  //     }
+  //   },
+  //   credentials: true,
+  //   optionsSuccessStatus: 200,
+  // };
 
-  app.use(cors(corsOptions));
+  app.use(cors());
   app.use(express.json());
   app.use(cookieParser());
 
