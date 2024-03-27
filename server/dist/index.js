@@ -41,7 +41,6 @@ function startServer() {
             credentials: true,
             optionsSuccessStatus: 200,
         };
-        corsOptions.origin = "*";
         app.use((0, cors_1.default)(corsOptions));
         app.use(express_1.default.json());
         app.use((0, cookie_parser_1.default)());
@@ -189,7 +188,7 @@ function startServer() {
             res.status(201).json({ status: true, message: "Successfully Added" });
         }));
         app.get("/interests/:id", (req, res) => __awaiter(this, void 0, void 0, function* () {
-            const { id } = req.body;
+            const { id } = req.params;
             const user = yield user_1.default.findById({ _id: id });
             if (!user) {
                 return res.status(401).json({ message: "User not find" });

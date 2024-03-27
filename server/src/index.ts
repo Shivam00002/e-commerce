@@ -13,9 +13,7 @@ async function startServer() {
   const app = express();
   const server = http.createServer(app);
   const PORT = process.env.PORT || 8000;
-
   const whitelist = ["http://localhost:3000"];
-
   const corsOptions: CorsOptions = {
     origin: function (
       origin: string | undefined,
@@ -31,11 +29,7 @@ async function startServer() {
     optionsSuccessStatus: 200,
   };
 
-
-  corsOptions.origin = "*";
-
   app.use(cors(corsOptions));
-  
   app.use(express.json());
   app.use(cookieParser());
 
@@ -205,7 +199,7 @@ async function startServer() {
   });
 
   app.get("/interests/:id", async (req, res) => {
-    const { id } = req.body;
+    const { id } = req.params;
     const user: any = await User.findById({ _id: id });
     if (!user) {
       return res.status(401).json({ message: "User not find" });
