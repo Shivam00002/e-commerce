@@ -30,7 +30,7 @@ async function startServer() {
     optionsSuccessStatus: 200,
   };
 
-  app.use(cors(corsOptions));
+  app.use(cors());
   app.use(express.json());
   app.use(cookieParser());
 
@@ -102,8 +102,6 @@ async function startServer() {
 
       setTimeout(async () => {
         await DeleteOTP(otpResult.email);
-
-       
       }, 1000 * 60 * 5);
 
       const token = jwt.sign(
@@ -190,51 +188,50 @@ async function startServer() {
     }
   });
 
- //Post interest
+  //Post interest
   app.post("/interests", async (req, res) => {
     const { interests, id } = req.body;
-    console.log(req.body)
-    const user:any = await User.findById({_id:id });
+    console.log(req.body);
+    const user: any = await User.findById({ _id: id });
     if (!user) {
       return res.status(401).json({ message: "User not find" });
     }
     user?.interest.push(interests);
-    const check= await user.save();
+    const check = await user.save();
     res.status(201).json({ status: true, message: "Successfully Added" });
   });
 
   //Get all interests
-  app.get('/interests',async(req,res)=>{
-     const {id}=req.body;
-     const user:any = await User.findById({_id:id });
-     if (!user) {
-      return res.status(401).json({ message: "User not find" });
-    }
-    return res.status(200).json({message:user.interest})
-
-  })
-
-  //Delete interest
-  app.delete('/interests',async(req,res)=>{
-    const {id,deleteinterest}=req.body;
-    const user:any = await User.findById({_id:id });
+  app.get("/interests/:id", async (req, res) => {
+    const { id } = req.params;
+    const user: any = await User.findById({ _id: id });
     if (!user) {
       return res.status(401).json({ message: "User not find" });
     }
-    user.interests = user.interests.filter((el:string)=>!deleteinterest.includes(el));
+    return res.status(200).json({ message: user.interest });
+  });
+
+  //Delete interest
+  app.delete("/interests/:id", async (req, res) => {
+    const { id } = req.params;
+    const { deleteinterest } = req.body;
+    const user: any = await User.findById({ _id: id });
+    if (!user) {
+      return res.status(401).json({ message: "User not find" });
+    }
+    user.interests = user.interests.filter(
+      (el: string) => !deleteinterest.includes(el)
+    );
     await user.save();
-    return res.status(200).json({ message: 'Interests deleted successfully', user });
-
-  })
-
-
+    return res
+      .status(200)
+      .json({ message: "Interests deleted successfully", user });
+  });
 
   const App = server.listen(PORT, () => {
     console.log(`Server is running on ${PORT}`);
   });
 
-
-  
   process.on("SIGTERM", () => {
     App.close(() => {
       console.log("Server disconnected gracefully");
@@ -243,4 +240,4 @@ async function startServer() {
   });
 }
 
-startServer()
+startServer();

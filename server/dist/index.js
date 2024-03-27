@@ -27,7 +27,7 @@ function startServer() {
     return __awaiter(this, void 0, void 0, function* () {
         const app = (0, express_1.default)();
         const server = http_1.default.createServer(app);
-        const PORT = process.env.PORT || 3000;
+        const PORT = process.env.PORT || 8000;
         const whitelist = ["http://localhost:3000"];
         const corsOptions = {
             origin: function (origin, callback) {
@@ -41,7 +41,7 @@ function startServer() {
             credentials: true,
             optionsSuccessStatus: 200,
         };
-        app.use((0, cors_1.default)(corsOptions));
+        app.use((0, cors_1.default)());
         app.use(express_1.default.json());
         app.use((0, cookie_parser_1.default)());
         (0, mongodb_1.DB_connection)();
@@ -189,8 +189,8 @@ function startServer() {
             res.status(201).json({ status: true, message: "Successfully Added" });
         }));
         //Get all interests
-        app.get('/interests', (req, res) => __awaiter(this, void 0, void 0, function* () {
-            const { id } = req.body;
+        app.get("/interests/:id", (req, res) => __awaiter(this, void 0, void 0, function* () {
+            const { id } = req.params;
             const user = yield user_1.default.findById({ _id: id });
             if (!user) {
                 return res.status(401).json({ message: "User not find" });
@@ -198,15 +198,18 @@ function startServer() {
             return res.status(200).json({ message: user.interest });
         }));
         //Delete interest
-        app.delete('/interests', (req, res) => __awaiter(this, void 0, void 0, function* () {
-            const { id, deleteinterest } = req.body;
+        app.delete("/interests/:id", (req, res) => __awaiter(this, void 0, void 0, function* () {
+            const { id } = req.params;
+            const { deleteinterest } = req.body;
             const user = yield user_1.default.findById({ _id: id });
             if (!user) {
                 return res.status(401).json({ message: "User not find" });
             }
             user.interests = user.interests.filter((el) => !deleteinterest.includes(el));
             yield user.save();
-            return res.status(200).json({ message: 'Interests deleted successfully', user });
+            return res
+                .status(200)
+                .json({ message: "Interests deleted successfully", user });
         }));
         const App = server.listen(PORT, () => {
             console.log(`Server is running on ${PORT}`);
