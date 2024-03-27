@@ -1,5 +1,4 @@
 "use strict";
-// models/user.ts
 var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
     var desc = Object.getOwnPropertyDescriptor(m, k);
@@ -30,7 +29,7 @@ const UserSchema = new mongoose_1.Schema({
     email: { type: String, required: true, unique: true },
     password: { type: String, required: true },
     otp: { type: String },
-    interest: []
+    interest: [{ type: String }]
 });
 const User = mongoose_1.default.model("User", UserSchema);
 exports.default = User;

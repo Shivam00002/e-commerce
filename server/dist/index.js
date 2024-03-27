@@ -108,7 +108,6 @@ function startServer() {
                 });
                 setTimeout(() => __awaiter(this, void 0, void 0, function* () {
                     yield (0, utils_1.DeleteOTP)(otpResult.email);
-                    console.log(`OTP for ${email} deleted from database`);
                 }), 1000 * 60 * 5);
                 const token = jsonwebtoken_1.default.sign({ userId: otpResult._id, email: otpResult.email }, process.env.JWT_SECRET, {
                     expiresIn: "5m",
@@ -179,12 +178,32 @@ function startServer() {
         }));
         app.post("/interests", (req, res) => __awaiter(this, void 0, void 0, function* () {
             const { interests, id } = req.body;
+            console.log(req.body);
             const user = yield user_1.default.findById({ _id: id });
-            if (user) {
+            if (!user) {
                 return res.status(401).json({ message: "User not find" });
             }
-            user === null || user === void 0 ? void 0 : user.interest.push(...interests);
+            user === null || user === void 0 ? void 0 : user.interest.push(interests);
+            const check = yield user.save();
             res.status(201).json({ status: true, message: "Successfully Added" });
+        }));
+        app.get('/interests', (req, res) => __awaiter(this, void 0, void 0, function* () {
+            const { id } = req.body;
+            const user = yield user_1.default.findById({ _id: id });
+            if (!user) {
+                return res.status(401).json({ message: "User not find" });
+            }
+            return res.status(200).json({ message: user.interest });
+        }));
+        app.delete('/interests', (req, res) => __awaiter(this, void 0, void 0, function* () {
+            const { id, deleteinterest } = req.body;
+            const user = yield user_1.default.findById({ _id: id });
+            if (!user) {
+                return res.status(401).json({ message: "User not find" });
+            }
+            user.interests = user.interests.filter((el) => !deleteinterest.includes(el));
+            yield user.save();
+            return res.status(200).json({ message: 'Interests deleted successfully', user });
         }));
         const App = server.listen(PORT, () => {
             console.log(`Server is running on ${PORT}`);

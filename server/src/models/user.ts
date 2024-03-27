@@ -1,13 +1,11 @@
-// models/user.ts
-
 import mongoose, { Schema, Document } from "mongoose";
 
 export interface UserDocument extends Document {
   username: string;
-  email: string; 
+  email: string;
   password: string;
-  otp?: string; 
-  interest: string[]
+  otp?: string;
+  interest:string[];
 }
 
 const UserSchema: Schema<UserDocument> = new Schema({
@@ -15,7 +13,7 @@ const UserSchema: Schema<UserDocument> = new Schema({
   email: { type: String, required: true, unique: true },
   password: { type: String, required: true },
   otp: { type: String },
-  interest:[]
+  interest: [{ type:String }]
 });
 
 const User = mongoose.model<UserDocument>("User", UserSchema);

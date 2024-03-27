@@ -6,7 +6,7 @@ import "dotenv/config";
 import express from "express";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import User from "./models/user";
+import User, { UserDocument } from "./models/user";
 import OTP from "./models/opt";
 import { generateOTP, SaveOTP, DeleteOTP, SendEmail } from "./utils";
 async function startServer() {
@@ -102,7 +102,7 @@ async function startServer() {
       setTimeout(async () => {
         await DeleteOTP(otpResult.email);
 
-        console.log(`OTP for ${email} deleted from database`);
+       
       }, 1000 * 60 * 5);
 
       const token = jwt.sign(
@@ -190,14 +190,35 @@ async function startServer() {
   });
   app.post("/interests", async (req, res) => {
     const { interests, id } = req.body;
-    const user:any = await User.findById({ _id: id });
-    if (user) {
+    console.log(req.body)
+    const user:any = await User.findById({_id:id });
+    if (!user) {
       return res.status(401).json({ message: "User not find" });
     }
-    user?.interest.push(...interests);
-
+    user?.interest.push(interests);
+    const check= await user.save();
     res.status(201).json({ status: true, message: "Successfully Added" });
   });
+  app.get('/interests',async(req,res)=>{
+     const {id}=req.body;
+     const user:any = await User.findById({_id:id });
+     if (!user) {
+      return res.status(401).json({ message: "User not find" });
+    }
+    return res.status(200).json({message:user.interest})
+
+  })
+  app.delete('/interests',async(req,res)=>{
+    const {id,deleteinterest}=req.body;
+    const user:any = await User.findById({_id:id });
+    if (!user) {
+      return res.status(401).json({ message: "User not find" });
+    }
+    user.interests = user.interests.filter((el:string)=>!deleteinterest.includes(el));
+    await user.save();
+    return res.status(200).json({ message: 'Interests deleted successfully', user });
+
+  })
 
   const App = server.listen(PORT, () => {
     console.log(`Server is running on ${PORT}`);
@@ -211,4 +232,4 @@ async function startServer() {
   });
 }
 
-startServer();
+startServer()
