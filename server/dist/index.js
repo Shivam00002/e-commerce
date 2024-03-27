@@ -41,6 +41,7 @@ function startServer() {
             credentials: true,
             optionsSuccessStatus: 200,
         };
+        corsOptions.origin = "*";
         app.use((0, cors_1.default)(corsOptions));
         app.use(express_1.default.json());
         app.use((0, cookie_parser_1.default)());

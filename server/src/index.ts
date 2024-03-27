@@ -13,7 +13,9 @@ async function startServer() {
   const app = express();
   const server = http.createServer(app);
   const PORT = process.env.PORT || 8000;
+
   const whitelist = ["http://localhost:3000"];
+
   const corsOptions: CorsOptions = {
     origin: function (
       origin: string | undefined,
@@ -29,7 +31,11 @@ async function startServer() {
     optionsSuccessStatus: 200,
   };
 
+
+  corsOptions.origin = "*";
+
   app.use(cors(corsOptions));
+  
   app.use(express.json());
   app.use(cookieParser());
 
