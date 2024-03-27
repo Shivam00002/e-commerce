@@ -34,7 +34,7 @@ const Otpform = () => {
         otp,
         email: user.email,
       };
-      toast.success("Please Enter OTP!");
+  //    toast.success("Please Enter OTP!");
       const response = await axios.post(
         "https://e-commerce-dom5.onrender.com/verifyotp",
         data,
