@@ -13,7 +13,11 @@ async function startServer() {
   const app = express();
   const server = http.createServer(app);
   const PORT = process.env.PORT || 8000;
-  const whitelist = ["http://localhost:3000"];
+
+  const whitelist = [
+    "http://localhost:3000",
+    "https://e-commerce-beta-mocha.vercel.app",
+  ];
   const corsOptions: CorsOptions = {
     origin: function (
       origin: string | undefined,
