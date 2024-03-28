@@ -23,6 +23,9 @@ const registerRoute_1 = __importDefault(require("./routes/registerRoute"));
 const verifyOtpRoute_1 = __importDefault(require("./routes/verifyOtpRoute"));
 const loginRoute_1 = __importDefault(require("./routes/loginRoute"));
 const getUserByIdRoute_1 = __importDefault(require("./routes/getUserByIdRoute"));
+const user_1 = __importDefault(require("./models/user"));
+const interestsRouter_1 = __importDefault(require("./routes/interestsRouter"));
+const getInterestsRouter_1 = __importDefault(require("./routes/getInterestsRouter"));
 function startServer() {
     return __awaiter(this, void 0, void 0, function* () {
         const app = (0, express_1.default)();
@@ -53,43 +56,24 @@ function startServer() {
         app.use("/register", registerRoute_1.default);
         app.use("/verifyotp", verifyOtpRoute_1.default);
         app.use("/login", loginRoute_1.default);
+        app.use("/interests", interestsRouter_1.default);
+        app.use("/interests", getInterestsRouter_1.default);
         app.get("/", (req, res) => {
             res.send({ _response: "Welcome to API" });
         });
-        // app.post("/interests", async (req, res) => {
-        //   const { interests, id } = req.body;
-        //   console.log(req.body);
-        //   const user: any = await User.findById({ _id: id });
-        //   if (!user) {
-        //     return res.status(401).json({ message: "User not find" });
-        //   }
-        //   user?.interest.push(interests);
-        //   const check = await user.save();
-        //   res.status(201).json({ status: true, message: "Successfully Added" });
-        // });
-        // app.get("/interests/:id", async (req, res) => {
-        //   const { id } = req.params;
-        //   const user: any = await User.findById({ _id: id });
-        //   if (!user) {
-        //     return res.status(401).json({ message: "User not find" });
-        //   }
-        //   return res.status(200).json({ message: user.interest });
-        // });
-        // app.delete("/interests/:id", async (req, res) => {
-        //   const { id } = req.params;
-        //   const { deleteinterest } = req.body;
-        //   const user: any = await User.findById({ _id: id });
-        //   if (!user) {
-        //     return res.status(401).json({ message: "User not find" });
-        //   }
-        //   user.interests = user.interests.filter(
-        //     (el: string) => !deleteinterest.includes(el)
-        //   );
-        //   await user.save();
-        //   return res
-        //     .status(200)
-        //     .json({ message: "Interests deleted successfully", user });
-        // });
+        app.delete("/interests/:id", (req, res) => __awaiter(this, void 0, void 0, function* () {
+            const { id } = req.params;
+            const { deleteinterest } = req.body;
+            const user = yield user_1.default.findById({ _id: id });
+            if (!user) {
+                return res.status(401).json({ message: "User not find" });
+            }
+            user.interests = user.interests.filter((el) => !deleteinterest.includes(el));
+            yield user.save();
+            return res
+                .status(200)
+                .json({ message: "Interests deleted successfully", user });
+        }));
         const App = server.listen(PORT, () => {
             console.log(`Server is running on ${PORT}`);
         });

@@ -12,21 +12,23 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const express_1 = require("express");
+const express_1 = __importDefault(require("express"));
 const user_1 = __importDefault(require("../models/user"));
-const router = (0, express_1.Router)();
-router.get("/:id", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const interestsRouter = express_1.default.Router();
+interestsRouter.post("/", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { interests, id } = req.body;
     try {
-        const userId = req.params.id;
-        const user = yield user_1.default.findById(userId);
+        const user = yield user_1.default.findById(id);
         if (!user) {
-            return res.status(404).json({ message: "User not found" });
+            return res.status(401).json({ message: "User not found" });
         }
-        res.status(200).json(user);
+        user.interests.push(...interests);
+        yield user.save();
+        res.status(201).json({ status: true, message: "Successfully Added" });
     }
     catch (error) {
-        console.error("Error fetching user:", error);
-        res.status(500).json({ message: "Internal server error" });
+        console.error("Error adding interests:", error);
+        res.status(500).json({ status: false, message: "Internal Server Error" });
     }
 }));
-exports.default = router;
+exports.default = interestsRouter;

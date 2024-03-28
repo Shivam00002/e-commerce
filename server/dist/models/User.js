@@ -29,7 +29,7 @@ const UserSchema = new mongoose_1.Schema({
     email: { type: String, required: true, unique: true },
     password: { type: String, required: true },
     otp: { type: String },
-    interest: [{ type: String }]
+    interests: [{ type: String }],
 });
 const User = mongoose_1.default.model("User", UserSchema);
 exports.default = User;
