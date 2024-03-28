@@ -59,7 +59,7 @@ const Otpform = () => {
         Verify your email
       </h2>
       <p className="text-center font-gray-200 leading-5 text-[16px]">
-        Enter the 8 digit code you have received on anu***@gmail.com
+        Enter the 4 digit code you have received on anu***@gmail.com
       </p>
       <form className="shadow-md  px-4 py-10" onSubmit={(e) => VerifyOTP(e)}>
         <p className="px-[3px] ">Code</p>
