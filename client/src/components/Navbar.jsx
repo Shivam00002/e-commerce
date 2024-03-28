@@ -102,7 +102,10 @@ const Navbar = () => {
           <LuShoppingCart size={20} />
           {token && (
             <div>
-              <div className="text-sm text-red-800 cursor-pointer " onClick={handleLogout}>
+              <div
+                className="text-sm text-red-800 cursor-pointer "
+                onClick={handleLogout}
+              >
                 Logout
               </div>
             </div>

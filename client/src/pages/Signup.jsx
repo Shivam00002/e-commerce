@@ -20,7 +20,6 @@ const Signup = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Check if any field is empty
     if (!formData.username || !formData.email || !formData.password) {
       toast.error("Please fill all the fields");
       return;

@@ -12,10 +12,24 @@ const fakeCategories = Array.from({ length: 100 }, () => ({
 }));
 
 const HomePage = () => {
-  const [userId, setUserId] = useState(""); 
+  const [userId, setUserId] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedInterests, setSelectedInterests] = useState([]);
-  console.log(selectedInterests);
+  const [userInterests, setUserInterests] = useState([]);
+
+  const getInterest = async (id) => {
+    console.log("Fetching interest with id:", id);
+    try {
+      const response = await axios.get(
+        `https://e-commerce-dom5.onrender.com/interests/${id}`
+      );
+      const interestData = response.data;
+      console.log("Api Data", interestData);
+      setUserInterests(interestData);
+    } catch (error) {
+      console.error("Error fetching interest:", error);
+    }
+  };
 
   useEffect(() => {
     const token = Cookies.get("token");
@@ -29,23 +43,40 @@ const HomePage = () => {
         console.error("Error decoding token:", error);
       }
     };
-
     decodeCookie();
   }, []);
 
   useEffect(() => {
+    console.log("userId aa gaso data", userInterests);
     if (userId) {
-      postSelectedInterests();
-    }
-  }, [selectedInterests, userId]); 
+      getInterest(userId);
 
-  const postSelectedInterests = async () => {
+      const parasentCategory = fakeCategories.find(
+        (category) => category.name === "parasent"
+      );
+      if (parasentCategory) {
+        handleInterestToggle(parasentCategory);
+      }
+    }
+  }, [userId]);
+
+  const postSelectedInterests = async (interests) => {
     try {
+      const uniqueInterests = [];
+      const uniqueNames = new Set();
+
+      for (const interest of interests) {
+        if (!uniqueNames.has(interest.name)) {
+          uniqueInterests.push(interest.name);
+          uniqueNames.add(interest.name);
+        }
+      }
+
       const data = {
         id: userId,
-        interests: selectedInterests.map((interest) => interest.name),
+        interests: uniqueInterests,
       };
-
+      console.log("Data:", data);
       const response = await axios.post(
         "https://e-commerce-dom5.onrender.com/interests",
         data
@@ -65,13 +96,25 @@ const HomePage = () => {
 
   const handlePageChange = (pageNumber) => setCurrentPage(pageNumber);
 
-  const handleInterestToggle = (interest) => {
+  const handleInterestToggle = async (interest) => {
     setSelectedInterests((prevInterests) => {
-      if (prevInterests.some((item) => item.id === interest.id)) {
-        return prevInterests.filter((item) => item.id !== interest.id);
+      let updatedInterests = [];
+      const isInterestSelected = prevInterests.some(
+        (item) => item.name === interest.name
+      );
+
+      if (isInterestSelected) {
+        updatedInterests = prevInterests.filter(
+          (item) => item.name !== interest.name
+        );
       } else {
-        return [...prevInterests, interest];
+        t;
+        updatedInterests = [...prevInterests, interest];
       }
+
+      postSelectedInterests(updatedInterests);
+
+      return updatedInterests;
     });
   };
 
@@ -85,7 +128,7 @@ const HomePage = () => {
         My saved interests!
       </p>
       <ul>
-        {currentCategories.map((category, index) => (
+        {currentCategories.map((category) => (
           <li key={category.id}>
             <label className="inline-flex items-center">
               <CustomCheckbox
