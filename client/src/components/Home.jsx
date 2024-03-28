@@ -18,7 +18,7 @@ const HomePage = () => {
   const [userInterests, setUserInterests] = useState([]);
 
   const getInterest = async (id) => {
-    console.log("Fetching interest with id:", id);
+    console.log("idddddd", id);
     try {
       const response = await axios.get(
         `https://e-commerce-dom5.onrender.com/interests/${id}`
@@ -30,6 +30,8 @@ const HomePage = () => {
       console.error("Error fetching interest:", error);
     }
   };
+
+
 
   useEffect(() => {
     const token = Cookies.get("token");
@@ -63,12 +65,12 @@ const HomePage = () => {
   const postSelectedInterests = async (interests) => {
     try {
       const uniqueInterests = [];
-      const uniqueNames = new Set();
+      const uniqueIds = new Set();
 
       for (const interest of interests) {
-        if (!uniqueNames.has(interest.name)) {
-          uniqueInterests.push(interest.name);
-          uniqueNames.add(interest.name);
+        if (!uniqueIds.has(interest.id)) {
+          uniqueInterests.push(interest);
+          uniqueIds.add(interest.id);
         }
       }
 
@@ -96,19 +98,18 @@ const HomePage = () => {
 
   const handlePageChange = (pageNumber) => setCurrentPage(pageNumber);
 
-  const handleInterestToggle = async (interest) => {
+  const handleInterestToggle = (interest) => {
     setSelectedInterests((prevInterests) => {
-      let updatedInterests = [];
       const isInterestSelected = prevInterests.some(
-        (item) => item.name === interest.name
+        (item) => item.id === interest.id
       );
 
+      let updatedInterests;
       if (isInterestSelected) {
         updatedInterests = prevInterests.filter(
-          (item) => item.name !== interest.name
+          (item) => item.id !== interest.id
         );
       } else {
-        t;
         updatedInterests = [...prevInterests, interest];
       }
 

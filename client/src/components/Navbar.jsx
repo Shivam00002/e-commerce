@@ -5,9 +5,10 @@ import Cookies from "js-cookie";
 import jwt from "jsonwebtoken";
 import logout from "./logout";
 import { useRouter } from "next/router";
+
 const Navbar = () => {
   const [username, setUsername] = useState("");
-  const token = Cookies.get("token") || null;
+  const [token, setToken] = useState(null); // Use state for token
   const COOKIE_NAME = "token";
   const router = useRouter();
 
@@ -29,8 +30,10 @@ const Navbar = () => {
   };
 
   useEffect(() => {
-    decodeCookie(token);
-  }, [token]);
+    const tokenFromCookie = Cookies.get("token") || null;
+    setToken(tokenFromCookie); // Set token state
+    decodeCookie(tokenFromCookie);
+  }, []);
 
   const NavLinks = [
     { name: "Categories", link: "" },
@@ -78,16 +81,27 @@ const Navbar = () => {
       </div>
 
       {isMobileMenuOpen && (
-        <div className="md:hidden absolute top-12 right-0 bg-white border shadow-md py-2 px-6">
+        <div className="md:hidden absolute top-12 right-0 bg-white border shadow-md py-3 w-fit h-fit px-6">
           {NavLinks.map((el, index) => (
             <a
-              className="font-semibold md:text-[17px] cursor-pointer "
+              className="font-semibold md:text-[17px] p-[2px] cursor-pointer "
               key={index}
               href={el.link}
             >
               <h3>{el.name}</h3>
             </a>
           ))}
+
+          {token && (
+            <div>
+              <div
+                className="text-sm text-red-800 font-semibold cursor-pointer "
+                onClick={handleLogout}
+              >
+                Logout
+              </div>
+            </div>
+          )}
         </div>
       )}
       <div className="hidden md:block">
