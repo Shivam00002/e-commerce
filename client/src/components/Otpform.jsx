@@ -23,6 +23,7 @@ const Otpform = () => {
     }
   };
 
+
   const [otp, setOTP] = useState(0);
   const [loading, setLoading] = useState(false);
 
