@@ -10,6 +10,7 @@ const Otpform = () => {
   const verification_id = searchParams.get("verification_id");
 
 
+
   const decodeCookie = (token) => {
     console.log("decoderfound for token", token);
     try {
