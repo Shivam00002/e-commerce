@@ -21,7 +21,8 @@ const HomePage = () => {
     console.log("idddddd", id);
     try {
       const response = await axios.get(
-        `https://e-commerce-dom5.onrender.com/interests/${id}`
+       
+ `https://e-commerce-dom5.onrender.com/interests/${id}`
       );
       const interestData = response.data;
       console.log("Api Data", interestData);
