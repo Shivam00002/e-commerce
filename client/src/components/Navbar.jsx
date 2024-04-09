@@ -17,6 +17,7 @@ const Navbar = () => {
     router.push("/Signup");
   };
 
+
   const decodeCookie = (token) => {
     try {
       if (token) {
