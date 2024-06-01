@@ -12,6 +12,7 @@ const useCookieAuthentication = (cookieName) => {
           return cookie.substring(cookieName.length + 1);
         }
       }
+
       return null;
     };
 
