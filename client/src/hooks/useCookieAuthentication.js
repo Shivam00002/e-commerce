@@ -16,6 +16,7 @@ const useCookieAuthentication = (cookieName) => {
       return null;
     };
 
+
     const cookie = getCookie();
     setCookieValue(cookie);
   }, [cookieName]);
