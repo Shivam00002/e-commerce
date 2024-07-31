@@ -6,6 +6,7 @@ export const CustomCheckbox = ({ checked, onChange }) => {
       className={`inline-block w-[22px] h-[22px] border rounded cursor-pointer ${
         checked ? "bg-black text-white" : "text-black"
       }`}
+
       onClick={onChange}
     >
       {checked && <span className="ml-1">&#10003;</span>}
