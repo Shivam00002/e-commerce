@@ -7,6 +7,7 @@ export const CustomCheckbox = ({ checked, onChange }) => {
         checked ? "bg-black text-white" : "text-black"
       }`}
 
+
       onClick={onChange}
     >
       {checked && <span className="ml-1">&#10003;</span>}
