@@ -11,6 +11,7 @@ const useCookieAuthentication = (cookieName) => {
         if (cookie.startsWith(`${cookieName}=`)) {
           return cookie.substring(cookieName.length + 1);
         }
+
       }
 
       return null;
