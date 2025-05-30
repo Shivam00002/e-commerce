@@ -12,6 +12,7 @@ const fakeCategories = Array.from({ length: 100 }, () => ({
 }));
 
 
+
 const HomePage = () => {
   const [userId, setUserId] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
